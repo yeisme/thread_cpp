@@ -7,3 +7,4 @@ set(CMAKE_CXX_STANDARD 23)
 # 使用不同的目标名称
 add_executable(thread_example thread/main.cpp)
 add_executable(async_example async/main.cpp)
+add_executable(mutex_example mutex/mutex.cpp)

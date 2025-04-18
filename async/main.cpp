@@ -63,7 +63,7 @@ int main()
     }
 
     // 带lambda表达式的异步任务
-    auto result5 = std::async([](int x)
+    auto result5 = std::async([](const int x)
     {
         std::this_thread::sleep_for(std::chrono::milliseconds(500));
         return x * x;

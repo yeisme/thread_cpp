@@ -13,6 +13,7 @@ void calculate_sum(const std::vector<int>& v, int begin, int end, std::promise<i
     promise.set_value(sum);
 }
 
+
 int main()
 {
     std::vector<int> v(10000, 1);
@@ -27,5 +28,7 @@ int main()
     t2.join();
 
     std::cout << "Sum: " << future1.get() + future2.get() << std::endl;
+
+
     return 0;
 }
