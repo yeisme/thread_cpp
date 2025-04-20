@@ -2,12 +2,10 @@
 #include <thread>
 #include <shared_mutex>
 #include <vector>
-#include <string>
 #include <chrono>
 
-class ThreadSafeCounter
+class thread_safe_counter
 {
-private:
     mutable std::shared_mutex mutex_;
     int value_ = 0;
 
@@ -22,23 +20,23 @@ public:
     // 只有一个线程可以递增计数器
     void increment()
     {
-        std::unique_lock<std::shared_mutex> lock(mutex_);
+        std::unique_lock lock(mutex_);
         ++value_;
     }
 
     // 只有一个线程可以重置计数器
     void reset()
     {
-        std::unique_lock<std::shared_mutex> lock(mutex_);
+        std::unique_lock lock(mutex_);
         value_ = 0;
     }
 };
 
 int main()
 {
-    ThreadSafeCounter counter;
+    auto counter = thread_safe_counter{};
 
-    auto reader = [&counter](int id)
+    auto reader = [&counter](const int id)
     {
         for (int i = 0; i < 3; ++i)
         {
@@ -47,7 +45,7 @@ int main()
         }
     };
 
-    auto writer = [&counter](int id)
+    auto writer = [&counter](const int id)
     {
         for (int i = 0; i < 3; ++i)
         {
@@ -60,15 +58,16 @@ int main()
     std::vector<std::thread> threads;
 
     // 启动3个读取线程
+    threads.reserve(3);
     for (int i = 0; i < 3; ++i)
     {
-        threads.push_back(std::thread(reader, i));
+        threads.emplace_back(reader, i);
     }
 
     // 启动2个写入线程
     for (int i = 0; i < 2; ++i)
     {
-        threads.push_back(std::thread(writer, i));
+        threads.emplace_back(writer, i);
     }
 
     // 等待所有线程完成
